@@ -1,0 +1,2714 @@
+{% if error %}
+
+<div class="error-card">
+
+    <strong>
+        Audit failed
+    </strong>
+
+    <p>
+        {{ error }}
+    </p>
+
+</div>
+
+
+<style>
+
+.error-card {
+
+    padding:
+        24px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        16px;
+
+    background:
+        var(--surface);
+
+    color:
+        var(--danger);
+}
+
+</style>
+
+
+{% else %}
+
+
+<div class="audit-dashboard">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <section class="report-top">
+
+        <div>
+
+            <div class="report-kicker">
+                Design Audit Report
+            </div>
+
+            <h2>
+                {{ report.url }}
+            </h2>
+
+            <p>
+                Visual consistency analysis
+                and detected design system.
+            </p>
+
+        </div>
+
+
+        <div class="overall-score">
+
+            <div class="score-value">
+
+                {{ report.overall_score }}
+
+            </div>
+
+            <div class="score-denominator">
+                /100
+            </div>
+
+            <div class="score-rating">
+                {{ report.rating }}
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================
+         CATEGORY SCORE CARDS
+    ========================================== -->
+
+    <section class="category-grid">
+
+
+        <article class="metric-card">
+
+            <div class="metric-label">
+                Typography
+            </div>
+
+            <div class="metric-value">
+
+                {{ report.category_scores.typography|default:"100" }}
+
+            </div>
+
+            <div class="metric-caption">
+                text consistency
+            </div>
+
+        </article>
+
+
+
+        <article class="metric-card">
+
+            <div class="metric-label">
+                Components
+            </div>
+
+            <div class="metric-value">
+
+                {{ report.category_scores.components|default:"100" }}
+
+            </div>
+
+            <div class="metric-caption">
+                UI consistency
+            </div>
+
+        </article>
+
+
+
+        <article class="metric-card">
+
+            <div class="metric-label">
+                Spacing
+            </div>
+
+            <div class="metric-value">
+
+                {{ report.category_scores.spacing|default:"100" }}
+
+            </div>
+
+            <div class="metric-caption">
+                rhythm consistency
+            </div>
+
+        </article>
+
+
+
+        <article class="metric-card">
+
+            <div class="metric-label">
+                Issues
+            </div>
+
+            <div class="metric-value">
+
+                {{ report.total_issues }}
+
+            </div>
+
+            <div class="metric-caption">
+                total deviations
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         SEVERITY
+    ========================================== -->
+
+    <section class="severity-row">
+
+
+        <div class="severity-card">
+
+            <span class="severity-dot major"></span>
+
+            <div>
+
+                <strong>
+                    {{ report.severity_counts.major }}
+                </strong>
+
+                <span>
+                    Major
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="severity-card">
+
+            <span class="severity-dot moderate"></span>
+
+            <div>
+
+                <strong>
+                    {{ report.severity_counts.moderate }}
+                </strong>
+
+                <span>
+                    Moderate
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="severity-card">
+
+            <span class="severity-dot minor"></span>
+
+            <div>
+
+                <strong>
+                    {{ report.severity_counts.minor }}
+                </strong>
+
+                <span>
+                    Minor
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         PAGE TABS
+    ========================================== -->
+
+    <div class="report-tabs">
+
+        <button
+            class="report-tab active"
+            onclick="showAuditTab(
+                'overview',
+                this
+            )"
+        >
+            Overview
+        </button>
+
+
+        <button
+            class="report-tab"
+            onclick="showAuditTab(
+                'issues',
+                this
+            )"
+        >
+            Issues
+        </button>
+
+
+        <button
+            class="report-tab"
+            onclick="showAuditTab(
+                'details',
+                this
+            )"
+        >
+            Audit Details
+        </button>
+
+
+        <button
+            class="report-tab"
+            onclick="showAuditTab(
+                'tokens',
+                this
+            )"
+        >
+            Design System
+        </button>
+
+    </div>
+
+
+
+    <!-- =========================================
+         OVERVIEW TAB
+    ========================================== -->
+
+    <section
+        class="
+            audit-tab-panel
+            active
+        "
+        id="audit-tab-overview"
+    >
+
+
+        <div class="overview-grid">
+
+
+            <article class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            Website Structure
+                        </span>
+
+                        <h3>
+                            Elements analyzed
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stats-grid">
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Headings
+                        </span>
+
+                        <strong>
+                            {{ report.stats.headings }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Paragraphs
+                        </span>
+
+                        <strong>
+                            {{ report.stats.paragraphs }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Buttons
+                        </span>
+
+                        <strong>
+                            {{ report.stats.buttons }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Links
+                        </span>
+
+                        <strong>
+                            {{ report.stats.links }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Inputs
+                        </span>
+
+                        <strong>
+                            {{ report.stats.inputs }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Sections
+                        </span>
+
+                        <strong>
+                            {{ report.stats.sections }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="stat-row">
+
+                        <span>
+                            Cards
+                        </span>
+
+                        <strong>
+                            {{ report.stats.cards }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </article>
+
+
+
+            <article class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            Audit Health
+                        </span>
+
+                        <h3>
+                            What needs attention
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="health-score">
+
+                    <div
+                        class="health-number"
+                    >
+
+                        {{ report.overall_score }}
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            {{ report.rating }}
+                        </strong>
+
+                        <p>
+
+                            {{ report.total_issues }}
+                            deviations detected
+                            across your interface.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+
+
+        <article class="panel top-issues-panel">
+
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="panel-kicker">
+                        Priorities
+                    </span>
+
+                    <h3>
+                        Top detected issues
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="issue-list">
+
+                {% for issue in report.all_issues|slice:":8" %}
+
+
+                    <div class="issue-card">
+
+
+                        <div
+                            class="
+                                severity-line
+                                {{ issue.severity }}
+                            "
+                        ></div>
+
+
+                        <div class="issue-main">
+
+
+                            <div class="issue-meta">
+
+                                <span
+                                    class="
+                                        issue-severity
+                                        {{ issue.severity }}
+                                    "
+                                >
+
+                                    {{ issue.severity }}
+
+                                </span>
+
+
+                                <span>
+                                    {{ issue.group }}
+                                </span>
+
+                            </div>
+
+
+                            <h4>
+                                {{ issue.text }}
+                            </h4>
+
+
+                            <div class="change-row">
+
+                                <span>
+                                    {{ issue.field|title }}
+                                </span>
+
+
+                                <div>
+
+                                    <del>
+                                        {{ issue.actual }}
+                                    </del>
+
+                                    <span class="arrow">
+                                        →
+                                    </span>
+
+                                    <strong>
+                                        {{ issue.expected }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                {% empty %}
+
+
+                    <div class="empty-state">
+
+                        No major design
+                        inconsistencies detected.
+
+                    </div>
+
+
+                {% endfor %}
+
+            </div>
+
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         ISSUES TAB
+    ========================================== -->
+
+    <section
+        class="audit-tab-panel"
+        id="audit-tab-issues"
+    >
+
+
+        <article class="panel">
+
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="panel-kicker">
+                        All Findings
+                    </span>
+
+                    <h3>
+                        Design inconsistencies
+                    </h3>
+
+                </div>
+
+
+                <div class="issue-count-pill">
+
+                    {{ report.total_issues }}
+                    Issues
+
+                </div>
+
+            </div>
+
+
+
+            <div class="issue-list">
+
+
+                {% for issue in report.all_issues %}
+
+
+                    <div class="issue-card">
+
+
+                        <div
+                            class="
+                                severity-line
+                                {{ issue.severity }}
+                            "
+                        ></div>
+
+
+                        <div class="issue-main">
+
+
+                            <div class="issue-meta">
+
+                                <span
+                                    class="
+                                        issue-severity
+                                        {{ issue.severity }}
+                                    "
+                                >
+
+                                    {{ issue.severity }}
+
+                                </span>
+
+
+                                <span>
+                                    {{ issue.group }}
+                                </span>
+
+                            </div>
+
+
+                            <h4>
+                                {{ issue.text }}
+                            </h4>
+
+
+                            <div class="change-row">
+
+                                <span>
+                                    {{ issue.field|title }}
+                                </span>
+
+
+                                <div>
+
+                                    <del>
+                                        {{ issue.actual }}
+                                    </del>
+
+                                    <span class="arrow">
+                                        →
+                                    </span>
+
+                                    <strong>
+                                        {{ issue.expected }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                {% empty %}
+
+
+                    <div class="empty-state">
+
+                        Excellent — no
+                        inconsistencies found.
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         AUDIT DETAILS TAB
+    ========================================== -->
+
+    <section
+        class="audit-tab-panel"
+        id="audit-tab-details"
+    >
+
+
+        <div class="report-groups">
+
+
+            {% for group in report.reports %}
+
+
+                <article class="panel audit-group">
+
+
+                    <div class="group-header">
+
+
+                        <div>
+
+                            <div class="group-category">
+
+                                {{ group.category }}
+
+                            </div>
+
+
+                            <h3>
+
+                                {{ group.name }}
+
+                            </h3>
+
+
+                            <p>
+
+                                {{ group.total }}
+                                elements analyzed
+
+                            </p>
+
+                        </div>
+
+
+
+                        <div class="group-score">
+
+                            {{ group.score }}%
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="score-track">
+
+                        <div
+                            class="score-fill"
+                            style="
+                                width:
+                                {{ group.score }}%;
+                            "
+                        ></div>
+
+                    </div>
+
+
+
+                    <div class="standard-box">
+
+
+                        <div class="standard-title">
+
+                            Detected Standard
+
+                        </div>
+
+
+                        <div class="standard-grid">
+
+
+                            {% for key, value in group.standards.items %}
+
+
+                                {% if value %}
+
+
+                                    <div class="standard-token">
+
+
+                                        <span>
+
+                                            {{ key|title }}
+
+                                        </span>
+
+
+                                        <strong>
+
+                                            {{ value }}
+
+                                        </strong>
+
+
+                                    </div>
+
+
+                                {% endif %}
+
+
+                            {% endfor %}
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    {% if group.issues %}
+
+
+                        <details class="group-issues">
+
+
+                            <summary>
+
+                                {{ group.issue_count }}
+                                deviations detected
+
+                            </summary>
+
+
+                            <div class="group-issue-list">
+
+
+                                {% for issue in group.issues %}
+
+
+                                    <div class="group-issue-row">
+
+
+                                        <div>
+
+
+                                            <strong>
+
+                                                {{ issue.text }}
+
+                                            </strong>
+
+
+                                            <span>
+
+                                                {{ issue.field|title }}
+
+                                            </span>
+
+
+                                        </div>
+
+
+                                        <div class="group-values">
+
+
+                                            <del>
+
+                                                {{ issue.actual }}
+
+                                            </del>
+
+
+                                            <span>
+                                                →
+                                            </span>
+
+
+                                            <strong>
+
+                                                {{ issue.expected }}
+
+                                            </strong>
+
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                {% endfor %}
+
+
+                            </div>
+
+
+                        </details>
+
+
+                    {% endif %}
+
+
+                </article>
+
+
+            {% endfor %}
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================================
+         DESIGN SYSTEM TAB
+    ========================================== -->
+
+    <section
+        class="audit-tab-panel"
+        id="audit-tab-tokens"
+    >
+
+
+        <div class="token-sections">
+
+
+            <article class="panel">
+
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            Typography Tokens
+                        </span>
+
+                        <h3>
+                            Font sizes
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="design-token-grid">
+
+
+                    {% for token in report.design_tokens.font_sizes %}
+
+
+                        <div class="design-token-card">
+
+                            <span>
+                                {{ token.count }}
+                                uses
+                            </span>
+
+                            <strong>
+                                {{ token.value }}
+                            </strong>
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </article>
+
+
+
+            <article class="panel">
+
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            Radius Tokens
+                        </span>
+
+                        <h3>
+                            Border radius
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="design-token-grid">
+
+
+                    {% for token in report.design_tokens.radii %}
+
+
+                        <div class="design-token-card">
+
+                            <span>
+                                {{ token.count }}
+                                uses
+                            </span>
+
+                            <strong>
+                                {{ token.value }}
+                            </strong>
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </article>
+
+
+
+            <article class="panel">
+
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            Color System
+                        </span>
+
+                        <h3>
+                            Most used text colors
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="color-grid">
+
+
+                    {% for token in report.design_tokens.colors %}
+
+
+                        <div class="color-token">
+
+
+                            <span
+                                class="color-preview"
+                                style="
+                                    background:
+                                    {{ token.value }};
+                                "
+                            ></span>
+
+
+                            <div>
+
+                                <strong>
+                                    {{ token.value }}
+                                </strong>
+
+                                <span>
+
+                                    {{ token.count }}
+                                    uses
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </article>
+
+
+
+            <article class="panel">
+
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <span class="panel-kicker">
+                            Background System
+                        </span>
+
+                        <h3>
+                            Common surfaces
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="color-grid">
+
+
+                    {% for token in report.design_tokens.backgrounds %}
+
+
+                        <div class="color-token">
+
+
+                            <span
+                                class="color-preview"
+                                style="
+                                    background:
+                                    {{ token.value }};
+                                "
+                            ></span>
+
+
+                            <div>
+
+                                <strong>
+                                    {{ token.value }}
+                                </strong>
+
+                                <span>
+
+                                    {{ token.count }}
+                                    uses
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+
+<style>
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.audit-dashboard {
+
+    display:
+        grid;
+
+    gap:
+        24px;
+}
+
+
+/* HEADER */
+
+.report-top {
+
+    padding:
+        30px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        30px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        22px;
+
+    background:
+        var(--surface);
+
+    box-shadow:
+        var(--shadow);
+}
+
+
+.report-kicker,
+.panel-kicker,
+.group-category {
+
+    color:
+        var(--primary);
+
+    font-size:
+        11px;
+
+    font-weight:
+        750;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .08em;
+}
+
+
+.report-top h2 {
+
+    margin:
+        8px 0 8px;
+
+    font-size:
+        27px;
+
+    letter-spacing:
+        -.03em;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.report-top p {
+
+    margin:
+        0;
+
+    color:
+        var(--muted);
+}
+
+
+.overall-score {
+
+    min-width:
+        130px;
+
+    height:
+        130px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        24px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.score-value {
+
+    font-size:
+        38px;
+
+    line-height:
+        1;
+
+    font-weight:
+        800;
+}
+
+
+.score-denominator {
+
+    margin-top:
+        3px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+.score-rating {
+
+    margin-top:
+        9px;
+
+    color:
+        var(--primary);
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+}
+
+
+/* METRICS */
+
+.category-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
+    gap:
+        16px;
+}
+
+
+.metric-card {
+
+    padding:
+        22px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        16px;
+
+    background:
+        var(--surface);
+}
+
+
+.metric-label {
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+.metric-value {
+
+    margin:
+        10px 0 3px;
+
+    font-size:
+        29px;
+
+    font-weight:
+        780;
+}
+
+
+.metric-caption {
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+}
+
+
+/* SEVERITY */
+
+.severity-row {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap:
+        14px;
+}
+
+
+.severity-card {
+
+    padding:
+        17px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    background:
+        var(--surface);
+}
+
+
+.severity-card div {
+
+    display:
+        flex;
+
+    align-items:
+        baseline;
+
+    gap:
+        7px;
+}
+
+
+.severity-card strong {
+
+    font-size:
+        19px;
+}
+
+
+.severity-card span:last-child {
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+.severity-dot {
+
+    width:
+        10px;
+
+    height:
+        10px;
+
+    border-radius:
+        50%;
+}
+
+
+.severity-dot.major {
+
+    background:
+        var(--danger);
+}
+
+
+.severity-dot.moderate {
+
+    background:
+        var(--warning);
+}
+
+
+.severity-dot.minor {
+
+    background:
+        var(--primary);
+}
+
+
+/* TABS */
+
+.report-tabs {
+
+    display:
+        flex;
+
+    gap:
+        6px;
+
+    padding:
+        6px;
+
+    overflow-x:
+        auto;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        14px;
+
+    background:
+        var(--surface);
+}
+
+
+.report-tab {
+
+    border:
+        0;
+
+    padding:
+        11px 15px;
+
+    border-radius:
+        9px;
+
+    color:
+        var(--muted);
+
+    background:
+        transparent;
+
+    font-size:
+        13px;
+
+    font-weight:
+        650;
+
+    cursor:
+        pointer;
+
+    white-space:
+        nowrap;
+}
+
+
+.report-tab.active {
+
+    color:
+        white;
+
+    background:
+        var(--primary);
+}
+
+
+.audit-tab-panel {
+
+    display:
+        none;
+}
+
+
+.audit-tab-panel.active {
+
+    display:
+        block;
+}
+
+
+/* PANELS */
+
+.panel {
+
+    padding:
+        26px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        18px;
+
+    background:
+        var(--surface);
+}
+
+
+.panel-head {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    margin-bottom:
+        22px;
+}
+
+
+.panel-head h3 {
+
+    margin:
+        6px 0 0;
+
+    font-size:
+        20px;
+
+    letter-spacing:
+        -.02em;
+}
+
+
+.overview-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1.1fr .9fr;
+
+    gap:
+        18px;
+}
+
+
+.stats-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            1fr
+        );
+
+    gap:
+        10px;
+}
+
+
+.stat-row {
+
+    padding:
+        14px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        11px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.stat-row span {
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+.health-score {
+
+    min-height:
+        180px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        20px;
+}
+
+
+.health-number {
+
+    min-width:
+        100px;
+
+    height:
+        100px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border-radius:
+        50%;
+
+    color:
+        white;
+
+    background:
+        var(--primary);
+
+    font-size:
+        32px;
+
+    font-weight:
+        800;
+}
+
+
+.health-score p {
+
+    max-width:
+        300px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.55;
+}
+
+
+/* ISSUES */
+
+.top-issues-panel {
+
+    margin-top:
+        18px;
+}
+
+
+.issue-list {
+
+    display:
+        grid;
+
+    gap:
+        10px;
+}
+
+
+.issue-card {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        4px 1fr;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        13px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.severity-line.major {
+
+    background:
+        var(--danger);
+}
+
+
+.severity-line.moderate {
+
+    background:
+        var(--warning);
+}
+
+
+.severity-line.minor {
+
+    background:
+        var(--primary);
+}
+
+
+.issue-main {
+
+    padding:
+        16px;
+}
+
+
+.issue-meta {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+}
+
+
+.issue-severity {
+
+    padding:
+        4px 7px;
+
+    border-radius:
+        999px;
+
+    text-transform:
+        capitalize;
+
+    font-weight:
+        700;
+}
+
+
+.issue-severity.major {
+
+    color:
+        var(--danger);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--danger) 12%,
+            transparent
+        );
+}
+
+
+.issue-severity.moderate {
+
+    color:
+        var(--warning);
+
+    background:
+        color-mix(
+            in srgb,
+            var(--warning) 12%,
+            transparent
+        );
+}
+
+
+.issue-severity.minor {
+
+    color:
+        var(--primary);
+
+    background:
+        var(--primary-soft);
+}
+
+
+.issue-card h4 {
+
+    margin:
+        10px 0;
+
+    font-size:
+        14px;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.change-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        18px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+.change-row div {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+}
+
+
+.change-row del {
+
+    color:
+        var(--danger);
+}
+
+
+.change-row strong {
+
+    color:
+        var(--success);
+}
+
+
+.arrow {
+
+    color:
+        var(--muted);
+}
+
+
+.issue-count-pill {
+
+    padding:
+        7px 10px;
+
+    border-radius:
+        999px;
+
+    color:
+        var(--primary);
+
+    background:
+        var(--primary-soft);
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+}
+
+
+/* GROUPS */
+
+.report-groups {
+
+    display:
+        grid;
+
+    gap:
+        16px;
+}
+
+
+.group-header {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+}
+
+
+.group-header h3 {
+
+    margin:
+        6px 0;
+
+    font-size:
+        18px;
+}
+
+
+.group-header p {
+
+    margin:
+        0;
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+.group-score {
+
+    font-size:
+        24px;
+
+    font-weight:
+        800;
+}
+
+
+.score-track {
+
+    height:
+        7px;
+
+    margin:
+        20px 0;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        999px;
+
+    background:
+        var(--surface-3);
+}
+
+
+.score-fill {
+
+    height:
+        100%;
+
+    border-radius:
+        inherit;
+
+    background:
+        var(--primary);
+}
+
+
+.standard-box {
+
+    padding:
+        16px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        13px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.standard-title {
+
+    margin-bottom:
+        11px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+
+    font-weight:
+        750;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .08em;
+}
+
+
+.standard-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                140px,
+                1fr
+            )
+        );
+
+    gap:
+        9px;
+}
+
+
+.standard-token {
+
+    padding:
+        11px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        9px;
+
+    background:
+        var(--surface);
+}
+
+
+.standard-token span {
+
+    display:
+        block;
+
+    margin-bottom:
+        5px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+}
+
+
+.standard-token strong {
+
+    display:
+        block;
+
+    font-size:
+        11px;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.group-issues {
+
+    margin-top:
+        16px;
+
+    border-top:
+        1px solid var(--border);
+
+    padding-top:
+        15px;
+}
+
+
+.group-issues summary {
+
+    color:
+        var(--primary);
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    cursor:
+        pointer;
+}
+
+
+.group-issue-list {
+
+    display:
+        grid;
+
+    gap:
+        8px;
+
+    margin-top:
+        12px;
+}
+
+
+.group-issue-row {
+
+    padding:
+        13px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        16px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        10px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.group-issue-row strong {
+
+    display:
+        block;
+
+    max-width:
+        650px;
+
+    font-size:
+        12px;
+}
+
+
+.group-issue-row span {
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+}
+
+
+.group-values {
+
+    display:
+        flex;
+
+    gap:
+        8px;
+
+    white-space:
+        nowrap;
+
+    font-size:
+        11px;
+}
+
+
+.group-values del {
+
+    color:
+        var(--danger);
+}
+
+
+.group-values strong {
+
+    color:
+        var(--success);
+}
+
+
+/* DESIGN SYSTEM */
+
+.token-sections {
+
+    display:
+        grid;
+
+    gap:
+        16px;
+}
+
+
+.design-token-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(
+                140px,
+                1fr
+            )
+        );
+
+    gap:
+        10px;
+}
+
+
+.design-token-card {
+
+    padding:
+        15px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        11px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.design-token-card span {
+
+    display:
+        block;
+
+    margin-bottom:
+        7px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+}
+
+
+.design-token-card strong {
+
+    font-size:
+        14px;
+}
+
+
+.color-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(
+                210px,
+                1fr
+            )
+        );
+
+    gap:
+        10px;
+}
+
+
+.color-token {
+
+    padding:
+        12px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        11px;
+
+    background:
+        var(--surface-2);
+}
+
+
+.color-preview {
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    flex:
+        0 0 auto;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        10px;
+}
+
+
+.color-token strong {
+
+    display:
+        block;
+
+    font-size:
+        11px;
+
+    overflow-wrap:
+        anywhere;
+}
+
+
+.color-token div span {
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+}
+
+
+.empty-state {
+
+    padding:
+        35px;
+
+    text-align:
+        center;
+
+    color:
+        var(--muted);
+
+    border:
+        1px dashed var(--border);
+
+    border-radius:
+        13px;
+}
+
+
+/* RESPONSIVE */
+
+@media (
+    max-width: 900px
+) {
+
+    .category-grid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                1fr
+            );
+    }
+
+
+    .overview-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+
+@media (
+    max-width: 650px
+) {
+
+    .report-top {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+
+    .overall-score {
+
+        width:
+            100%;
+
+        height:
+            auto;
+
+        min-height:
+            110px;
+    }
+
+
+    .category-grid,
+    .severity-row {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .stats-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .change-row,
+    .group-issue-row {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+
+    .group-values {
+
+        white-space:
+            normal;
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+function showAuditTab(
+    tabName,
+    button
+) {
+
+    const panels =
+        document.querySelectorAll(
+            ".audit-tab-panel"
+        );
+
+
+    panels.forEach(
+        panel => {
+            panel.classList.remove(
+                "active"
+            );
+        }
+    );
+
+
+    const buttons =
+        document.querySelectorAll(
+            ".report-tab"
+        );
+
+
+    buttons.forEach(
+        tab => {
+            tab.classList.remove(
+                "active"
+            );
+        }
+    );
+
+
+    const target =
+        document.getElementById(
+            "audit-tab-" + tabName
+        );
+
+
+    if (target) {
+
+        target.classList.add(
+            "active"
+        );
+
+    }
+
+
+    button.classList.add(
+        "active"
+    );
+
+}
+
+</script>
+
+
+{% endif %}
